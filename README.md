@@ -56,3 +56,40 @@ Use `-help` to print the full list of flags and environment variables.
 - The LDAP client wrapper (`internal/ldapclient`) manages connection reuse, StartTLS negotiation, and automatic reconnection on transport errors.
 - MCP tool handlers (`internal/tools`) validate inputs before invoking LDAP operations; for example the `page_size` argument is clamped to the `uint32` range used by paged results controls.
 - Format Go sources with `gofmt` and keep module dependencies tidy via `go mod tidy` when dependencies change.
+
+## Docker
+
+create a `.env` file with the following variables:
+```
+LDAP_URL=ldap://localhost:389
+LDAP_BIND_DN=cn=admin,dc=example,dc=com
+LDAP_BIND_PASSWORD=secret
+```
+
+build the image:
+
+```bash
+docker compose build
+```
+
+start the container:
+
+```bash
+docker compose up -d
+```
+The server will be available at `http://localhost:8080`.
+
+## MCP Client
+
+### Cursor
+
+```json
+{
+  "mcpServers": {
+    "ldap-mcp": {
+      "type": "SSE",
+      "url": "http://localhost:8080/sse"
+    }
+  }
+}
+```

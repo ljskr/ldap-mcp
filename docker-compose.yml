@@ -1,0 +1,26 @@
+services:
+  ldap-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GOPROXY: ${GOPROXY:-https://goproxy.cn,direct}
+        GOSUMDB: ${GOSUMDB:-sum.golang.google.cn}
+    image: ldap-mcp:latest
+    ports:
+      - "${MCP_PUBLISH_PORT:-8080}:8080"
+    environment:
+      MCP_PORT: "8080"
+      LDAP_BIND_PASSWORD: ${LDAP_BIND_PASSWORD:-}
+    command:
+      - "-url"
+      - "${LDAP_URL:-ldap://host.docker.internal:389}"
+      - "-bind-dn"
+      - "${LDAP_BIND_DN:-}"
+      # Optional: append flags below or replace `command` entirely.
+      # - "-starttls"
+      - "-insecure"
+      - "-read-write"
+      # - "-timeout"
+      # - "60s"
+    restart: unless-stopped
